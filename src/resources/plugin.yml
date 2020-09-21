@@ -1,0 +1,5 @@
+name: ButtPlugin
+main: com.myass.buttplugin.ButtPlugin
+version: 1.8.7
+description: It sucks
+api-version: '1.13'
