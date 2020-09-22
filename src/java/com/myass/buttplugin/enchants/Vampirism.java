@@ -1,13 +1,22 @@
 package com.myass.buttplugin.enchants;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Random;
 
 import com.myass.buttplugin.models.CombatEnchant;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.Server.Spigot;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class Vampirism extends CombatEnchant {
   private Random random = new Random();
@@ -29,10 +38,17 @@ public class Vampirism extends CombatEnchant {
   public void onAttack(int level, LivingEntity attacker, Entity defender) {
     double roll = random.nextDouble() * 100;
 
-    if (roll <= 35.0) {
+    if (roll <= 20.0) {
       int heal = random.nextInt(level) + 1;
 
       attacker.setHealth(Math.min(attacker.getHealth() + heal, attacker.getMaxHealth()));
+
+      if (attacker instanceof Player) {
+        ((Player) attacker).spigot().sendMessage(ChatMessageType.ACTION_BAR,
+            TextComponent.fromLegacyText(ChatColor.GREEN + "VAMPIRISM"));
+      }
+      // Effect
+
     }
   }
 
