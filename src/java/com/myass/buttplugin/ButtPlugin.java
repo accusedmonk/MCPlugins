@@ -1,6 +1,5 @@
 package com.myass.buttplugin;
 
-import com.myass.buttplugin.enchants.Vampirism;
 import com.myass.buttplugin.helpers.EnchantManager;
 import com.myass.buttplugin.listeners.CombatListener;
 import com.myass.buttplugin.listeners.EnchantListener;
@@ -15,7 +14,8 @@ public class ButtPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         System.out.println("Suck it");
-        registerEnchantments();
+
+        new EnchantManager();
 
         Bukkit.getPluginManager().registerEvents(new CombatListener(), this);
         Bukkit.getPluginManager().registerEvents(new EnchantListener(), this);
@@ -28,7 +28,6 @@ public class ButtPlugin extends JavaPlugin {
     }
 
     private void registerEnchantments() {
-        EnchantManager.registerCustomEnchant(new Vampirism());
     }
 
     public static ButtPlugin getInstance() {

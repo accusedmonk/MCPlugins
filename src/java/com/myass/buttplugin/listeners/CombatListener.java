@@ -29,7 +29,7 @@ public class CombatListener implements Listener {
                 CustomEnchant customEnchant = customEnchantInstance.getEnchant();
 
                 if (customEnchant instanceof CombatEnchant) {
-                    ((CombatEnchant) customEnchant).onAttack(level, livingAttacker, defender);
+                    ((CombatEnchant) customEnchant).onAttack(event, level, livingAttacker, defender);
                 }
             }
         }
@@ -43,7 +43,7 @@ public class CombatListener implements Listener {
                 CustomEnchant customEnchant = customEnchantInstance.getEnchant();
 
                 if (customEnchant instanceof CombatEnchant) {
-                    ((CombatEnchant) customEnchant).onDefend(level, attacker, livingDefender);
+                    ((CombatEnchant) customEnchant).onDefend(event, level, attacker, livingDefender);
                 }
             }
         }

@@ -14,7 +14,7 @@ public class CustomEnchantInstance {
   }
 
   public void setLevel(int level) {
-    this.level = level;
+    this.level = Math.min(level, enchant.getMaxLevel());
   }
 
   public String getLoreLine() {

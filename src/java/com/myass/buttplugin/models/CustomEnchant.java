@@ -14,11 +14,12 @@ public class CustomEnchant {
   private double weight;
   private int maxLevel;
   private ChatColor enchantTextColor = ChatColor.GRAY;
+  private String groupId = null;
   private List<Material> itemTypes;
 
-  public CustomEnchant(String displayName, String id, double weight, int maxLevel, List<Material> itemTypes) {
+  public CustomEnchant(String displayName, double weight, int maxLevel, List<Material> itemTypes) {
     this.displayName = displayName;
-    this.id = id;
+    this.id = displayName.toLowerCase().replace(" ", "");
     this.weight = weight;
     this.maxLevel = maxLevel;
 
@@ -27,11 +28,24 @@ public class CustomEnchant {
     this.itemTypes = itemTypes;
   }
 
-  public CustomEnchant(String displayName, String id, double weight, int maxLevel, List<Material> itemTypes,
+  public CustomEnchant(String displayName, double weight, int maxLevel, List<Material> itemTypes,
       ChatColor enchantTextColor) {
-    this(displayName, id, weight, maxLevel, itemTypes);
+    this(displayName, weight, maxLevel, itemTypes);
 
     this.enchantTextColor = enchantTextColor;
+  }
+
+  public CustomEnchant(String displayName, double weight, int maxLevel, List<Material> itemTypes, String groupId) {
+    this(displayName, weight, maxLevel, itemTypes);
+
+    this.groupId = groupId;
+  }
+
+  public CustomEnchant(String displayName, double weight, int maxLevel, List<Material> itemTypes,
+      ChatColor enchantTextColor, String groupId) {
+    this(displayName, weight, maxLevel, itemTypes, enchantTextColor);
+
+    this.groupId = groupId;
   }
 
   public boolean canEnchant(ItemStack items) {
