@@ -8,10 +8,19 @@ public class CustomEnchantInstance {
     this.level = level;
     this.enchant = enchant;
   }
-  
+
   public int getLevel() {
     return level;
   }
+
+  public void setLevel(int level) {
+    this.level = Math.min(level, enchant.getMaxLevel());
+  }
+
+  public String getLoreLine() {
+    return this.enchant.getLoreLine(level);
+  }
+
   public CustomEnchant getEnchant() {
     return enchant;
   }
