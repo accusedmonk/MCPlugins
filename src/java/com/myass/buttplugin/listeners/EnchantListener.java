@@ -23,6 +23,7 @@ public class EnchantListener implements Listener {
     ItemStack item = event.getItem();
 
     addCustomEnchant(event.getExpLevelCost(), item);
+    EnchantManager.removeGlow(item);
   }
 
   @EventHandler
@@ -36,7 +37,7 @@ public class EnchantListener implements Listener {
     List<CustomEnchantInstance> sacrificeEnchants = EnchantManager.getCustomEnchantsFromItem(contents[1]);
 
     for (CustomEnchantInstance cei : sacrificeEnchants) {
-      EnchantManager.addCustomEnchantToItem(cei, result);
+      EnchantManager.addCustomEnchantToItem(cei, result, true);
     }
 
     event.setResult(result);
@@ -63,7 +64,7 @@ public class EnchantListener implements Listener {
     int randIndex = random.nextInt(customEnchants.size());
     CustomEnchant enchant = customEnchants.get(randIndex);
     CustomEnchantInstance enchantInstance = new CustomEnchantInstance(1, enchant);
-    EnchantManager.addCustomEnchantToItem(enchantInstance, item);
+    EnchantManager.addCustomEnchantToItem(enchantInstance, item, true);
   }
 
 }

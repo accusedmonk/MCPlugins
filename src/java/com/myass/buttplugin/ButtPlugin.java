@@ -1,5 +1,6 @@
 package com.myass.buttplugin;
 
+import com.myass.buttplugin.commands.CEnchantCommand;
 import com.myass.buttplugin.helpers.EnchantManager;
 import com.myass.buttplugin.listeners.CombatListener;
 import com.myass.buttplugin.listeners.EnchantListener;
@@ -16,9 +17,9 @@ public class ButtPlugin extends JavaPlugin {
         System.out.println("Suck it");
 
         new EnchantManager();
+        registerCommands();
+        registerEvents();
 
-        Bukkit.getPluginManager().registerEvents(new CombatListener(), this);
-        Bukkit.getPluginManager().registerEvents(new EnchantListener(), this);
         instance = this;
     }
 
@@ -27,10 +28,16 @@ public class ButtPlugin extends JavaPlugin {
         System.out.println("Unsuck it");
     }
 
-    private void registerEnchantments() {
-    }
-
     public static ButtPlugin getInstance() {
         return instance;
+    }
+
+    private void registerCommands() {
+        this.getCommand("cenchant").setExecutor(new CEnchantCommand());
+    }
+
+    private void registerEvents() {
+        Bukkit.getPluginManager().registerEvents(new CombatListener(), this);
+        Bukkit.getPluginManager().registerEvents(new EnchantListener(), this);
     }
 }

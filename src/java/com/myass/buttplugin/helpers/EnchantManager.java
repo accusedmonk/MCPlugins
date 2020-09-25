@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import com.google.gson.Gson;
 import com.myass.buttplugin.ButtPlugin;
 import com.myass.buttplugin.enchants.Critical;
+import com.myass.buttplugin.enchants.Glow;
 import com.myass.buttplugin.enchants.Surge;
 import com.myass.buttplugin.enchants.Vampirism;
 import com.myass.buttplugin.models.CustomEnchant;
@@ -16,8 +17,10 @@ import com.myass.buttplugin.models.CustomEnchantInstance;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -110,9 +113,14 @@ public class EnchantManager {
         return equippedEnchants;
     }
 
-    public static void addCustomEnchantToItem(CustomEnchantInstance customEnchantInstance, ItemStack item) {
+    public static void addCustomEnchantToItem(CustomEnchantInstance customEnchantInstance, ItemStack item,
+            boolean addGlow) {
         ItemMeta itemMeta = item.getItemMeta();
         List<String> lore = itemMeta.hasLore() ? itemMeta.getLore() : new ArrayList<>();
+
+        if (!itemMeta.hasEnchants() && addGlow) {
+            addGlow(item.getType(), itemMeta);
+        }
 
         NamespacedKey customKey = new NamespacedKey(ButtPlugin.getInstance(), "Enchants");
         Gson gson = new Gson();
@@ -149,6 +157,47 @@ public class EnchantManager {
         String jsonEnchants = gson.toJson(customEnchantMap);
         persistentContainer.set(customKey, PersistentDataType.STRING, jsonEnchants);
         itemMeta.setLore(lore);
+        item.setItemMeta(itemMeta);
+    }
+
+    public static void setCustomEnchantOnItem(CustomEnchantInstance customEnchantInstance, ItemStack item,
+            boolean addGlow) {
+        ItemMeta itemMeta = item.getItemMeta();
+        List<String> lore = itemMeta.hasLore() ? itemMeta.getLore() : new ArrayList<>();
+
+        if (!itemMeta.hasEnchants() && addGlow) {
+            addGlow(item.getType(), itemMeta);
+        }
+
+        NamespacedKey customKey = new NamespacedKey(ButtPlugin.getInstance(), "Enchants");
+        Gson gson = new Gson();
+        HashMap<String, Double> customEnchantMap = null;
+        PersistentDataContainer persistentContainer = itemMeta.getPersistentDataContainer();
+
+        if (persistentContainer.has(customKey, PersistentDataType.STRING)) {
+            customEnchantMap = gson.fromJson(persistentContainer.get(customKey, PersistentDataType.STRING),
+                    HashMap.class);
+        } else {
+            customEnchantMap = new HashMap<String, Double>();
+        }
+
+        String enchantId = customEnchantInstance.getEnchant().getId();
+        if (customEnchantMap.size() == 0 || !customEnchantMap.containsKey(enchantId)) {
+            customEnchantMap.put(customEnchantInstance.getEnchant().getId(), (double) customEnchantInstance.getLevel());
+            lore.add(customEnchantInstance.getLoreLine());
+        } else {
+            int currentLevel = (int) Math.round(customEnchantMap.get(enchantId));
+            CustomEnchantInstance cei = new CustomEnchantInstance(currentLevel, getCustomEnchant(enchantId));
+            int loreLine = lore.indexOf(cei.getLoreLine());
+            cei.setLevel(customEnchantInstance.getLevel());
+            customEnchantMap.put(enchantId, (double) cei.getLevel());
+            lore.set(loreLine, cei.getLoreLine());
+        }
+
+        String jsonEnchants = gson.toJson(customEnchantMap);
+        persistentContainer.set(customKey, PersistentDataType.STRING, jsonEnchants);
+        itemMeta.setLore(lore);
+
         item.setItemMeta(itemMeta);
     }
 
@@ -203,5 +252,19 @@ public class EnchantManager {
             return map.get(number);
         }
         return map.get(l) + toRoman(number - l);
+    }
+
+    private static void addGlow(Material type, ItemMeta itemMeta) {
+        Enchantment enchant = type == Material.FISHING_ROD ? Enchantment.ARROW_DAMAGE : Enchantment.LURE;
+        itemMeta.addEnchant(enchant, 1, false);
+        itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+    }
+
+    public static void removeGlow(ItemStack item) {
+        ItemMeta itemMeta = item.getItemMeta();
+        Enchantment enchant = item.getType() == Material.FISHING_ROD ? Enchantment.ARROW_DAMAGE : Enchantment.LURE;
+        itemMeta.removeEnchant(enchant);
+        itemMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
+        item.setItemMeta(itemMeta);
     }
 }

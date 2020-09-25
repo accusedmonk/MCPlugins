@@ -3,3 +3,7 @@ main: com.myass.buttplugin.ButtPlugin
 version: 1.8.7
 description: It sucks
 api-version: "1.13"
+commands:
+  cenchant:
+    description: Add custom enchant to item
+    usage: /cenchant <enchantname> <level>
